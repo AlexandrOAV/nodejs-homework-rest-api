@@ -5,7 +5,7 @@ const validateBody = (schema) => {
     const { error } = schema.validate(req.body);
     if (error) {
       let errorMessage;
-      if (!req.body || Object.keys(req.body).length === 0) {
+      if (Object.keys(req.body).length === 0) {
         errorMessage = "missing fields";
       } else {
         errorMessage = error.details[0].message;
