@@ -41,6 +41,7 @@ const removeContact = async (id) => {
   }
 }
 
+
 const addContact = async (body) => {
   try {
     const contacts = await listContacts();
@@ -80,3 +81,4 @@ export default {
   addContact,
   updateContact,
 }
+
