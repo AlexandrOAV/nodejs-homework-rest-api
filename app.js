@@ -1,4 +1,3 @@
-
 import express, { json } from 'express'
 import logger from 'morgan'
 import cors from 'cors'
@@ -22,5 +21,4 @@ app.use((err, req, res, next) => {
   const { status = 500, message = 'Server error' } = err;
   res.status(status).json({ message })
 })
-
 export default app
