@@ -10,5 +10,6 @@ const userUpdateSubscriptionValidate = validateBody(updateSubscriptionSchema);
 const authRouter = Router();
 
 authRouter.post ("/register", userRegisterValidate, ctrl.register);
+authRouter.post("/login", userLoginValidate, ctrl.login)
 export default authRouter;
 
