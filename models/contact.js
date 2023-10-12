@@ -1,6 +1,6 @@
 import { Schema, model } from "mongoose";
-import { handleMongooseError, runValidationAtUpdate } from "./hooks.js";
 import Joi from "joi";
+import { handleMongooseError, runValidationAtUpdate } from "./hooks.js";
 
 const validationEmail = /^[\w\.-]+@[a-zA-Z\d\.-]+\.[a-zA-Z]{2,}$/;
 const validationPhone = /^[0-9\s\-()+.]+$/;
@@ -25,6 +25,11 @@ const contactSchema = new Schema(  {
     favorite: {
       type: Boolean,
       default: false,
+    },
+    owner: {
+      type: Schema.Types.ObjectId,
+      ref: "user",
+      required: true,
     },
   }, 
   { versionKey: false })
@@ -64,9 +69,11 @@ export const addSchema = Joi.object({
       "any.required": "Missing required favorite field",
     }),
 });
+
  export const updateStatusSchema = Joi.object({
   favorite: Joi.boolean().required(),
 });
+
 
 
 export default Contact;
