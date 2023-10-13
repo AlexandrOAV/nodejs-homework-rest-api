@@ -25,7 +25,10 @@ const userShema = new Schema ({
         enum: subscriptionOptions,
         default: subscriptionOptions[0],
       },
-            token: String,
+      token: {
+        type: String,
+        default: null,
+      },
 },  { versionKey: false });
 
 userShema.post('save', handleMongooseError)

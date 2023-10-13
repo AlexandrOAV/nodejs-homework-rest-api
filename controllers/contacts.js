@@ -3,9 +3,16 @@ import httpError from "../helpers/httpError.js";
 import ctrlWrapper from "../helpers/ctrlWrapper.js";
 import Contact from "../models/contact.js";
 
-const listContacts = async (_, res) => {
-    const result = await Contact.find();
-    res.json(result);
+const listContacts = async (req, res) => {
+  const { _id: owner } = req.user;
+  const { page = 1, limit = 20, favorite } = req.query;
+  const skip = (page - 1) * limit;
+  const query = { owner };
+  if (favorite !== undefined) {
+    query.favorite = favorite;
+  }
+  const result = await Contact.find(query, null, { skip, limit }).populate("owner", "name email");
+  res.json(result);
 };
 
 const getContactById = async (req, res) => {
@@ -18,7 +25,8 @@ const getContactById = async (req, res) => {
 };
 
 const addContact = async (req, res) => {
-  const result = await Contact.create(req.body);
+  const { _id: owner } = req.user;
+  const result = await Contact.create({...req.body, owner});
   res.status(201).json(result);
 }
 
