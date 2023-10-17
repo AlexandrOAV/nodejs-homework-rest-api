@@ -3,20 +3,22 @@ import contacts from "../../controllers/contacts.js";
 import validateBody from "../../middlewares/validateBody.js";
 import { addSchema, updateStatusSchema } from "../../models/contact.js";
 import isValidId from "../../middlewares/isValidId.js";
+import authenticate from "../../middlewares/authenticate.js";
 
 
 const router = Router();
 
-router.get("/", contacts.listContacts);
 
-router.get("/:id", isValidId, contacts.getContactById);
+router.get("/", authenticate, contacts.listContacts);
 
-router.post("/", validateBody(addSchema), contacts.addContact);
+router.get("/:id", authenticate, isValidId, contacts.getContactById);
 
-router.delete("/:id", isValidId, contacts.removeContact);
+router.post("/", authenticate, validateBody(addSchema), contacts.addContact);
 
-router.put("/:id", isValidId, validateBody(addSchema), contacts.updateContact);
+router.delete("/:id", authenticate, isValidId, contacts.removeContact);
 
-router.patch("/:id/favorite", isValidId, validateBody(updateStatusSchema), contacts.updateStatusContact);
+router.put("/:id", authenticate, isValidId, validateBody(addSchema), contacts.updateContact);
+
+router.patch("/:id/favorite", authenticate, isValidId, validateBody(updateStatusSchema), contacts.updateStatusContact);
 
 export default router;
