@@ -3,6 +3,7 @@ import httpError from "../helpers/httpError.js";
 import ctrlWrapper from "../helpers/ctrlWrapper.js";
 import User from "../models/user.js";
 import jwt from 'jsonwebtoken';
+
 import 'dotenv/config';
 
 const { JWT_SECRET } = process.env;
