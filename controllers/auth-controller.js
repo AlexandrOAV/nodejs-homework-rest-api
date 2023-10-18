@@ -3,7 +3,7 @@ import httpError from "../helpers/httpError.js";
 import ctrlWrapper from "../helpers/ctrlWrapper.js";
 import User from "../models/user.js";
 import jwt from 'jsonwebtoken';
-
+import gravatar from 'gravatar'
 import 'dotenv/config';
 
 const { JWT_SECRET } = process.env;
@@ -15,10 +15,16 @@ const register = async (req, res) => {
     const user = await User.findOne({ email });
     if (user) throw httpError(409, `Email ${email} in use`);
     const hashPassword = await bcrypt.hash(password, 10);
+    const avatarURL = gravatar.url(email, {
+    s:'250',
+    r:'g',
+    d:'wavatar'
+    })
     const newUser = await User.create({
       email,
       password: hashPassword,
       subscription,
+      avatarURL,
     });
     res.status(201).json({
       email: newUser.email,
