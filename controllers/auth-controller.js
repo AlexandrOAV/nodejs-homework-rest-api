@@ -1,4 +1,5 @@
 import bcrypt from "bcrypt";
+import fs from 'fs/promises';
 import httpError from "../helpers/httpError.js";
 import ctrlWrapper from "../helpers/ctrlWrapper.js";
 import User from "../models/user.js";
