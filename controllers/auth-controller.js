@@ -1,12 +1,14 @@
 import bcrypt from "bcrypt";
 import fs from 'fs/promises';
 import httpError from "../helpers/httpError.js";
+import sendEmail from "../helpers/sendEmail.js";
 import ctrlWrapper from "../helpers/ctrlWrapper.js";
 import User from "../models/user.js";
 import jwt from 'jsonwebtoken';
 import gravatar from 'gravatar'
 import path from "path";
 import Jimp from "jimp";
+import { nanoid } from "nanoid";
 import 'dotenv/config';
 
 
@@ -23,13 +25,24 @@ const register = async (req, res) => {
     s:'250',
     r:'g',
     d:'wavatar'
-    })
+    });
+    const verificationToken = nanoid();
+
     const newUser = await User.create({
       email,
       password: hashPassword,
       subscription,
       avatarURL,
+      verificationToken,
     });
+
+    const verifyEmail = {
+      to: email,
+      subject: "Verify email",
+      html: `<a href="${BASE_URL}/api/users/verify/${verificationToken}" target='_blank' >Verify email</a>`,
+    }
+    await sendEmail(verifyEmail);
+
     res.status(201).json({
       email: newUser.email,
       subscription: newUser.subscription,
