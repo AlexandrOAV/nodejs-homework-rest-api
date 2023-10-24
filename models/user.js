@@ -25,11 +25,14 @@ const userShema = new Schema ({
         enum: subscriptionOptions,
         default: subscriptionOptions[0],
       },
+      avatarURL: {
+        type: String
+      },
       token: {
         type: String,
         default: null,
       },
-},  { versionKey: false });
+},  { versionKey: false,  timestamps: true });
 
 userShema.post('save', handleMongooseError)
 userShema.pre('findOneAndUpdate', runValidationAtUpdate)
