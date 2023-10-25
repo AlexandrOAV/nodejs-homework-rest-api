@@ -4,7 +4,7 @@ import { handleMongooseError, runValidationAtUpdate } from "./hooks.js";
 
 const emailRegexp = /^[\w\.-]+@[a-zA-Z\d\.-]+\.[a-zA-Z]{2,}$/;
 const errorEmailRegexp = 'Email is not valid format';
-const passwordRegexp = /[a-zA-Z\d]{8,}$/;
+const passwordRegexp = /^[a-zA-Z0-9]{8,}$/;
 const errorPasswordRegexp = 'Please, enter validation password'
 const subscriptionOptions = ["starter", "pro", "business"];
 
@@ -69,6 +69,13 @@ export const registerSchema = Joi.object({
     password: Joi.string().pattern(passwordRegexp).required().messages({
       "string.pattern.base": errorPasswordRegexp,
       "any.required": "Missing required password field",
+    }),
+  });
+
+ export  const emailSchema = Joi.object({
+    email: Joi.string().pattern(emailRegexp).required().messages({
+      "string.pattern.base": errorEmailRegexp,
+      "any.required": "Missing required field email",
     }),
   });
   

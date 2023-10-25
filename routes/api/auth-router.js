@@ -1,12 +1,13 @@
 import { Router } from "express";
 import ctrl from '../../controllers/auth-controller.js' 
 import validateBody from "../../middlewares/validateBody.js";
-import { registerSchema, loginSchema, updateSubscriptionSchema } from "../../models/user.js";
+import { registerSchema, loginSchema, updateSubscriptionSchema, emailSchema } from "../../models/user.js";
 import authenticate from "../../middlewares/authenticate.js";
 import upload from "../../middlewares/upload.js"
 
 const userRegisterValidate = validateBody(registerSchema);
 const userLoginValidate = validateBody(loginSchema);
+const userEmailValidate = validateBody(emailSchema);
 const userUpdateSubscriptionValidate = validateBody(updateSubscriptionSchema);
 const userAvatarUpload = upload.single("avatar");
 
@@ -15,6 +16,9 @@ const authRouter = Router();
 
 authRouter.post ("/register", userRegisterValidate, ctrl.register);
 authRouter.post("/login", userLoginValidate, ctrl.login);
+
+authRouter.get("/verify/:verificationToken", ctrl.verifyEmail);
+authRouter.post("/verify", userEmailValidate, ctrl.resendVerifyEmail);
 
 authRouter.get("/current", authenticate, ctrl.getCurrentUser);
 

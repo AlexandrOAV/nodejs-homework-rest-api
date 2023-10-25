@@ -12,7 +12,7 @@ import { nanoid } from "nanoid";
 import 'dotenv/config';
 
 
-const { JWT_SECRET } = process.env;
+const { JWT_SECRET, BASE_URL } = process.env;
 
 const register = async (req, res) => {
     const {
@@ -58,6 +58,9 @@ const login = async(req, res)=>{
   if (!user) {
     throw httpError(401, "Email or password is wrong");
   }
+  if (!user.verify) {
+    throw httpError(401, "Email is not verified");
+  }
   const passwordCompare = await bcrypt.compare(password, user.password);
   if (!passwordCompare) {
     throw httpError(401, "Email or password is wrong");
@@ -76,6 +79,35 @@ const login = async(req, res)=>{
     user: responseUser,
   });
 };
+
+const verifyEmail = async (req, res) => {
+  const { verificationToken } = req.params;
+  const user = await User.findOne({ verificationToken });
+  if (!user) throw httpError(400, "User not found. Invalid verification code");
+  await User.findByIdAndUpdate(user._id, { verify: true, verificationToken: null });
+  res.json({ message: "Verification successful" });
+};
+
+const resendVerifyEmail = async (req, res) =>{
+ const {email} = req.body;
+ const user = await User.findOne({ email });
+ 
+if (!user){ 
+  throw httpError (404, "missing required field email")
+};
+if (user.verify){
+  throw httpError (400, "Verification has already been passed")
+};
+
+const verifyEmail = {
+  to: email,
+  subject: "Verify email",
+  html: `<a href="${BASE_URL}/api/users/verify/${user.verificationToken}" target='_blank' >Verify email</a>`,
+}
+
+await sendEmail(verifyEmail);
+res.json ({massage: "Verification email sent"});
+}
 
 const getCurrentUser = (req, res) => {
   const { user: { email, subscription }, } = req;
@@ -120,8 +152,11 @@ const updateAvatar = async (req, res, next) => {;
 export default {
   register: ctrlWrapper(register),
   login: ctrlWrapper(login),
+  verifyEmail:ctrlWrapper(verifyEmail),
+  resendVerifyEmail:ctrlWrapper(resendVerifyEmail),
   getCurrentUser: ctrlWrapper(getCurrentUser),
   logout: ctrlWrapper(logout),
   updateSubscription: ctrlWrapper(updateSubscription),
   updateAvatar: ctrlWrapper(updateAvatar),
+  
 };
