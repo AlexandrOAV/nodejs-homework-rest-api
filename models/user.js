@@ -4,8 +4,8 @@ import { handleMongooseError, runValidationAtUpdate } from "./hooks.js";
 
 const emailRegexp = /^[\w\.-]+@[a-zA-Z\d\.-]+\.[a-zA-Z]{2,}$/;
 const errorEmailRegexp = 'Email is not valid format';
-const passwordRegexp = /^[a-zA-Z0-9]{8,}$/;
-const errorPasswordRegexp = 'Please, enter validation password'
+const passwordRegexp = /(?=.*[a-zA-Z])(?=.*\d)[a-zA-Z\d]{8,}$/;
+const errorPasswordRegexp = 'Please, enter validation password. Minimum 8 characters. Numbers and letters  '
 const subscriptionOptions = ["starter", "pro", "business"];
 
 const userShema = new Schema ({
